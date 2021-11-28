@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Mono;
-import reactor.rabbitmq.RabbitFlux;
-import reactor.rabbitmq.Sender;
-import reactor.rabbitmq.SenderOptions;
+import reactor.rabbitmq.*;
 
 import javax.annotation.PreDestroy;
 import java.io.IOException;
@@ -32,6 +30,12 @@ public class RabbitConfig {
     Sender sender(){
         return RabbitFlux.createSender(new SenderOptions().connectionMono(connectionMono));
     }
+
+    @Bean
+    Receiver receiver(Mono<Connection> mono) {
+        return RabbitFlux.createReceiver(new ReceiverOptions().connectionMono(mono));
+    }
+
 
     @PreDestroy
     public void close() throws IOException {
